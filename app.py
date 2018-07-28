@@ -1,7 +1,9 @@
 import tweepy
 import csv
 import re
+import numpy as np
 import pandas as pd
+from __future__ import division
 import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
@@ -80,18 +82,27 @@ dataset = pd.read_csv('users.csv', delimiter = ',', quoting = 3)
 X = dataset.iloc[:, 0].values.astype('U')
 
 # Creating a bag of words model
-from sklearn.feature_extraction.text import CountVectorizer
-cv = CountVectorizer(max_features = 1500)
-X = cv.fit_transform(X).toarray()
+from sklearn.feature_extraction.text import TfidfVectorizer
+vectorizer = TfidfVectorizer(max_features = 1500)
+X = vectorizer.fit_transform(X).toarray()
 y = dataset.iloc[:, 1].values
 
+from imblearn.over_sampling import SMOTE, RandomOverSampler
+X, y = RandomOverSampler().fit_sample(X, y)
+X, y = SMOTE().fit_sample(X, y)
+
 # Splitting the dataset into the Training set and Test set
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 0)
 
 # Fitting Naive Bayes to the Training set
-from sklearn.naive_bayes import GaussianNB
-classifier = GaussianNB()
+#from sklearn.naive_bayes import MultinomialNB
+#classifier = MultinomialNB()
+#classifier.fit(X_train, y_train)
+
+# Fitting Kernel SVM to the Training set
+from sklearn.svm import SVC
+classifier = SVC(kernel = 'rbf')
 classifier.fit(X_train, y_train)
 
 # Predicting the Test set results
@@ -100,3 +111,7 @@ y_pred = classifier.predict(X_test)
 # Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
+print('Overall Accuracy: ' + str(np.trace(cm) / np.sum(cm)))
+
+from sklearn.metrics import classification_report
+print(classification_report(y_test, y_pred))
