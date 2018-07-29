@@ -1,9 +1,9 @@
+from __future__ import division
 import tweepy
 import csv
 import re
 import numpy as np
 import pandas as pd
-from __future__ import division
 import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
@@ -14,7 +14,7 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 api = tweepy.API(auth)
 
 users_list = []
-current_user = api.get_user(screen_name = 'colinmarsch')
+current_user = api.get_user(screen_name = 'jtimberlake')
 
 # # Get all the tweets of the account that is specified
 # print('Getting all the tweets of the specified user.')
@@ -87,10 +87,6 @@ vectorizer = TfidfVectorizer(max_features = 1500)
 X = vectorizer.fit_transform(X).toarray()
 y = dataset.iloc[:, 1].values
 
-from imblearn.over_sampling import SMOTE, RandomOverSampler
-X, y = RandomOverSampler().fit_sample(X, y)
-X, y = SMOTE().fit_sample(X, y)
-
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 0)
@@ -100,9 +96,15 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, rand
 #classifier = MultinomialNB()
 #classifier.fit(X_train, y_train)
 
-# Fitting Kernel SVM to the Training set
+# Applying the oversampling algorithm SMOTE and Fitting Kernel SVM to the Training set
 from sklearn.svm import SVC
+from imblearn.over_sampling import SMOTE
+from imblearn.pipeline import Pipeline as imbPipeline
 classifier = SVC(kernel = 'rbf')
+classifier = imbPipeline([
+    ('oversample', SMOTE()),
+    ('clf', classifier)
+    ])
 classifier.fit(X_train, y_train)
 
 # Predicting the Test set results
