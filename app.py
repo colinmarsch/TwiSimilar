@@ -8,67 +8,32 @@ X = dataset.iloc[:, 0].values.astype('U')
 
 # Creating a bag of words model
 from sklearn.feature_extraction.text import TfidfVectorizer
-vectorizer = TfidfVectorizer(max_features = 1500)
+vectorizer = TfidfVectorizer(ngram_range = (1,2), max_features = 50000)
 X = vectorizer.fit_transform(X).toarray()
 y = dataset.iloc[:, 1].values
 
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 0)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.15, random_state = 0)
 
-#  # Fitting Naive Bayes to the Training set
-#  from sklearn.naive_bayes import MultinomialNB
-#  from imblearn.over_sampling import SMOTE
-#  from imblearn.pipeline import Pipeline as imbPipeline
-#  classifier = MultinomialNB()
-#  classifier = imbPipeline([
-#      ('oversample', SMOTE()),
-#      ('clf', classifier)
-#      ])
-#  classifier.fit(X_train, y_train)
+## Fitting Naive Bayes to the Training set
+#from sklearn.naive_bayes import MultinomialNB
+#classifier = MultinomialNB()
+#classifier.fit(X_train, y_train)
 
-# Applying the oversampling algorithm SMOTE and Fitting Kernel SVM to the Training set
-from sklearn.svm import SVC
-from imblearn.over_sampling import SMOTE
-from imblearn.pipeline import Pipeline as imbPipeline
-classifier = SVC(kernel = 'linear')
-classifier = imbPipeline([
-    ('oversample', SMOTE()),
-    ('clf', classifier)
-    ])
+# Fitting LinearSVC to the Training set ~75%
+from sklearn.svm import LinearSVC
+classifier = LinearSVC()
 classifier.fit(X_train, y_train)
 
 ## Fitting Logistic Regression to the Training Set
 #from sklearn.linear_model import LogisticRegression
-#from imblearn.over_sampling import SMOTE
-#from imblearn.pipeline import Pipeline as imbPipeline
-#classifier = LogisticRegression(multi_class = 'multinomial', solver = 'sag')
-#classifier = imbPipeline([
-#    ('oversample', SMOTE()),
-#    ('clf', classifier)
-#    ])
+#classifier = LogisticRegression(multi_class = 'ovr', solver = 'sag')
 #classifier.fit(X_train, y_train)
 
 ## Fitting Random Forest to the Training Set
 #from sklearn.ensemble import RandomForestClassifier
-#from imblearn.over_sampling import SMOTE
-#from imblearn.pipeline import Pipeline as imbPipeline
 #classifier = RandomForestClassifier(n_estimators = 10, criterion = 'entropy')
-#classifier = imbPipeline([
-#    ('oversample', SMOTE()),
-#    ('clf', classifier)
-#    ])
-#classifier.fit(X_train, y_train)
-
-## Fitting KNeighborsClassifier to the Training Set ~39%
-#from sklearn.neighbors import KNeighborsClassifier
-#from imblearn.over_sampling import SMOTE
-#from imblearn.pipeline import Pipeline as imbPipeline
-#classifier = KNeighborsClassifier(n_jobs = 2, p = 1)
-#classifier = imbPipeline([
-#    ('oversample', SMOTE()),
-#    ('clf', classifier)
-#    ])
 #classifier.fit(X_train, y_train)
 
 # Predicting the Test set results

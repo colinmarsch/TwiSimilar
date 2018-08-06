@@ -60,7 +60,7 @@ with open('Top10Accounts.csv', 'wb') as csvfile:
                break
            for tweet in users_tweets:
                tweet_text = ''.join([i if (ord(i) < 128 and i not in [',', '\n']) else ' ' for i in tweet.text])
-               tweet_text = re.sub('http\S*\s', '', tweet_text)
+               tweet_text = re.sub(r"http\S+", "", tweet_text)
                tweet_text = re.sub('[^a-zA-Z]', ' ', tweet_text).lower().split()
                ps = PorterStemmer()
                tweet_text = [ps.stem(word) for word in tweet_text if not word in set(stopwords.words('english'))]
