@@ -39,28 +39,34 @@ classifier.fit(X_train, y_train)
 # Predicting the Test set results
 y_pred = classifier.predict(X_test)
 
-# Applying k-Fold Cross Validation
-from sklearn.model_selection import cross_val_score
-accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10)
-accuracies.mean()
-accuracies.std()
+# # Applying k-Fold Cross Validation
+# from sklearn.model_selection import cross_val_score
+# accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10)
+# accuracies.mean()
+# accuracies.std()
 
 # Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
 print('Overall Accuracy: ' + str(np.trace(cm) / np.sum(cm)))
 
-# Applying Grid Search to find the best model and the best parameters
-from sklearn.model_selection import GridSearchCV
-parameters = [{'C': [0.25, 0.5, 1, 10], 'dual': [True, False], 'intercept_scaling': [1, 10]}]
-grid_search = GridSearchCV(estimator = classifier,
-                           param_grid = parameters,
-                           scoring = 'accuracy',
-                           cv = 10,
-                           verbose = 1000)
-grid_search = grid_search.fit(X_train, y_train)
-best_accuracy = grid_search.best_score_
-best_parameters = grid_search.best_params_
+# # Applying Grid Search to find the best model and the best parameters
+# from sklearn.model_selection import GridSearchCV
+# parameters = [{'C': [0.25, 0.5, 1, 10], 'dual': [True, False], 'intercept_scaling': [1, 10]}]
+# grid_search = GridSearchCV(estimator = classifier,
+#                            param_grid = parameters,
+#                            scoring = 'accuracy',
+#                            cv = 10,
+#                            verbose = 1000)
+# grid_search = grid_search.fit(X_train, y_train)
+# best_accuracy = grid_search.best_score_
+# best_parameters = grid_search.best_params_
 
 from sklearn.metrics import classification_report
 print(classification_report(y_test, y_pred))
+
+import pickle
+filename = 'tweet_classifier.pkl'
+model_pickle = open(filename, 'wb')
+pickle.dump(classifier, model_pickle)
+model_pickle.close()
