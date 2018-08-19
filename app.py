@@ -1,26 +1,57 @@
-from flask import Flask
+from flask import Flask, redirect
 import pickle
 import numpy as np
 import re
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
+import tweepy
+import webbrowser
+from collections import Counter
 nltk.download('stopwords')
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 app = Flask(__name__)
 
-@app.route('/<tweet>')
-def predict_similar(tweet):
+@app.route('/')
+def authorize():
+    # Redirect user to Twitter to authorize
+    webbrowser.open(auth.get_authorization_url())
+    return 'Hello, World'
+
+@app.route('/verify/<pin>')
+def predict_similar(pin):
+    # Get access token
+    auth.get_access_token(verifier = pin)
+
+    # Construct the API instance
+    api = tweepy.API(auth)
+
+    current_user = api.me()
+
+    tweet_text_list = []
+    for i in range(1, 17):
+        users_tweets = []
+        try:
+            users_tweets = api.user_timeline(screen_name = current_user.screen_name, count = 200, page = i)
+        except tweepy.error.TweepError:
+            break
+        if len(users_tweets) == 0:
+            break
+        for tweet in users_tweets:
+            tweet_text = ''.join([i if (ord(i) < 128 and i not in [',', '\n']) else ' ' for i in tweet.text])
+            tweet_text = re.sub(r"http\S+", "", tweet_text)
+            tweet_text = re.sub('[^a-zA-Z]', ' ', tweet_text).lower().split()
+            ps = PorterStemmer()
+            tweet_text = [ps.stem(word) for word in tweet_text if not word in set(stopwords.words('english'))]
+            tweet_text = ' '.join(tweet_text)
+            tweet_text_list.append(tweet_text)
+
     model_pkl = open('tweet_classifier.pkl', 'rb')
     classifier = pickle.load(model_pkl)
     vectorizer_pkl = open('vectorizer.pkl', 'rb')
     vectorizer = pickle.load(vectorizer_pkl)
 
-    tweet_text = ''.join([i if (ord(i) < 128 and i not in [',', '\n']) else ' ' for i in tweet])
-    tweet_text = re.sub(r"http\S+", "", tweet_text)
-    tweet_text = re.sub('[^a-zA-Z]', ' ', tweet_text).lower().split()
-    ps = PorterStemmer()
-    tweet_text = [ps.stem(word) for word in tweet_text if not word in set(stopwords.words('english'))]
-    tweet_text = ' '.join(tweet_text)
-    X = vectorizer.transform([tweet_text])
+    X = vectorizer.transform(tweet_text_list)
+    predictions = classifier.predict(X)
 
-    return classifier.predict(X)[0]
+    return Counter(predictions).most_common(1)[0]
