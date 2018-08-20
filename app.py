@@ -1,4 +1,5 @@
-from flask import Flask, redirect
+from flask import Flask, redirect, session, request
+from flask_cors import CORS
 import pickle
 import numpy as np
 import re
@@ -9,23 +10,33 @@ import tweepy
 import webbrowser
 from collections import Counter
 nltk.download('stopwords')
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 app = Flask(__name__)
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+CORS(app)
 
 @app.route('/')
 def authorize():
     # Redirect user to Twitter to authorize
-    webbrowser.open(auth.get_authorization_url())
-    return 'Hello, World'
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    try:
+        redirect_url = auth.get_authorization_url()
+    except tweepy.TweepError:
+        print('Error! Failed to get request token.')
+    session['request_token'] = auth.request_token
+    return redirect(redirect_url)
 
-@app.route('/verify/<pin>')
-def predict_similar(pin):
-    # Get access token
-    auth.get_access_token(verifier = pin)
-
+@app.route('/verify')
+def predict_similar():
+    verifier = request.args.get('oauth_verifier')
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    token = session.get('request_token')
+    auth.request_token = token
+    try:
+        auth.get_access_token(verifier)
+    except tweepy.TweepError:
+        print('Error! Failed to get access token.')
     # Construct the API instance
     api = tweepy.API(auth)
-
     current_user = api.me()
 
     tweet_text_list = []
