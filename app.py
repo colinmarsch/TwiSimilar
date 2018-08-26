@@ -7,12 +7,11 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 import tweepy
-import webbrowser
 from collections import Counter
 nltk.download('stopwords')
 app = Flask(__name__)
-app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
-CORS(app)
+app.secret_key = 'A0Zr98j/3yXR~XHH!jmN]LWX/,?RT'
+CORS(app, supports_credentials=True)
 
 @app.route('/')
 def authorize():
@@ -23,13 +22,17 @@ def authorize():
     except tweepy.TweepError:
         print('Error! Failed to get request token.')
     session['request_token'] = auth.request_token
-    return redirect(redirect_url)
+    session.modified = True
+    print(session)
+    return redirect_url
 
 @app.route('/verify')
 def predict_similar():
+    print(session)
     verifier = request.args.get('oauth_verifier')
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     token = session.get('request_token')
+    session.pop('request_token')
     auth.request_token = token
     try:
         auth.get_access_token(verifier)
