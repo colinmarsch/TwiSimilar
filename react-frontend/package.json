@@ -4,10 +4,11 @@
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
+    "query-string": "^6.1.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "react-scripts": "1.1.4",
-    "react-twitter-auth": "0.0.12"
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "1.1.4"
   },
   "scripts": {
     "start": "react-scripts start",

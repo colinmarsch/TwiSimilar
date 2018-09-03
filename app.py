@@ -23,12 +23,10 @@ def authorize():
         print('Error! Failed to get request token.')
     session['request_token'] = auth.request_token
     session.modified = True
-    print(session)
     return redirect_url
 
 @app.route('/verify')
 def predict_similar():
-    print(session)
     verifier = request.args.get('oauth_verifier')
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     token = session.get('request_token')
