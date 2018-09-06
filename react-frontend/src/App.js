@@ -7,7 +7,7 @@ const qs = require('query-string');
 class Result extends Component {
   constructor(props) {
     super(props);
-    this.state = {account: ''};
+    this.state = {account: 'loading'};
   }
 
   componentDidMount() {
@@ -26,8 +26,9 @@ class Result extends Component {
 
   render() {
     return (
-      // display the account name that is returned here from the state
-      <p>{this.state.account}</p>
+      <div>
+        {this.state.account === 'loading' ? <div class='ui active massive inline inverted loader' /> : <p>Your most similar top 10 Twitter account is: {this.state.account}</p>}
+      </div>
     );
   }
 }
@@ -53,11 +54,9 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div className="Outer">
-          <div className="App">
-            <Route exact path="/" component={TwitterLoginButton} />
-            <Route path="/result" component={Result} />
-          </div>
+        <div className="App">
+          <Route exact path="/" component={TwitterLoginButton} />
+          <Route path="/result" component={Result} />
         </div>
       </Router>
     );

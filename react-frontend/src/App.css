@@ -6,6 +6,11 @@
   transform: translate(-50%, -50%);
 }
 
+p {
+  color: white;
+  font-size: 24px;
+}
+
 body {
   background-color: #0084b4;
 }
