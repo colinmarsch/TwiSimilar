@@ -42,7 +42,7 @@ class TwitterLoginButton extends Component {
 
   render() {
     return (
-      <button onClick={() => this.authenticate()}>
+      <button class='ui button' onClick={() => this.authenticate()}>
         Log in with Twitter
       </button>
     );
@@ -53,9 +53,11 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div className="App">
-          <Route exact path="/" component={TwitterLoginButton} />
-          <Route path="/result" component={Result} />
+        <div className="Outer">
+          <div className="App">
+            <Route exact path="/" component={TwitterLoginButton} />
+            <Route path="/result" component={Result} />
+          </div>
         </div>
       </Router>
     );
