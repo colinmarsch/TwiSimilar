@@ -16,7 +16,7 @@ CORS(app, supports_credentials=True)
 @app.route('/')
 def authorize():
     # Redirect user to Twitter to authorize
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth = tweepy.OAuthHandler('SMcVpidT9ypKR8FgPFws6O1Tz', 'LQ7Q5YSEJK6l5jAhTjj1JCi60NSXhT6SWXEIzVlgH3qhfo76wM')
     try:
         redirect_url = auth.get_authorization_url()
     except tweepy.TweepError:
@@ -28,7 +28,7 @@ def authorize():
 @app.route('/verify')
 def predict_similar():
     verifier = request.args.get('oauth_verifier')
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth = tweepy.OAuthHandler('SMcVpidT9ypKR8FgPFws6O1Tz', 'LQ7Q5YSEJK6l5jAhTjj1JCi60NSXhT6SWXEIzVlgH3qhfo76wM')
     token = session.get('request_token')
     session.pop('request_token')
     auth.request_token = token
