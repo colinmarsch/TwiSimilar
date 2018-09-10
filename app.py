@@ -66,4 +66,4 @@ def predict_similar():
     X = vectorizer.transform(tweet_text_list)
     predictions = classifier.predict(X)
 
-    return Counter(predictions).most_common(1)[0], 200
+    return Counter(predictions).most_common(1)[0], 200, []
