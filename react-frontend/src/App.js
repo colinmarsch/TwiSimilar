@@ -18,7 +18,7 @@ class Result extends Component {
       validateStatus: (status) => status === 6
     };
 
-    axios.get('http://127.0.0.1:5000/verify', obj)
+    axios.get('https://twisimilar.herokuapp.com/verify', obj)
       .then(res => {
         this.setState({account: res.data});
       });
@@ -27,7 +27,7 @@ class Result extends Component {
   render() {
     return (
       <div>
-        {this.state.account === 'loading' ? <div class='ui active massive inline inverted loader' /> : <p>Your most similar top 10 Twitter account is: {this.state.account}</p>}
+        {this.state.account === 'loading' ? <div className='ui active massive inline inverted loader' /> : <p>Your most similar top 10 Twitter account is: {this.state.account}</p>}
       </div>
     );
   }
@@ -35,7 +35,7 @@ class Result extends Component {
 
 class TwitterLoginButton extends Component {
   authenticate() {
-    axios.get('http://127.0.0.1:5000/', {withCredentials: true})
+    axios.get('https://twisimilar.herokuapp.com/', {withCredentials: true})
       .then(res => {
         window.location.replace(res.data);
       });

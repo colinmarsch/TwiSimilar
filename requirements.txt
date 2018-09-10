@@ -4,3 +4,4 @@ tweepy
 gunicorn
 numpy
 nltk
+sklearn
