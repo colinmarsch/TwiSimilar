@@ -56,6 +56,7 @@ def predict_similar():
             ps = PorterStemmer()
             tweet_text = [ps.stem(word) for word in tweet_text if not word in set(stopwords.words('english'))]
             tweet_text = ' '.join(tweet_text)
+            print(tweet_text)
             tweet_text_list.append(tweet_text)
 
     model_pkl = open('tweet_classifier.pkl', 'rb')
