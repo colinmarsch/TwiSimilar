@@ -4,5 +4,5 @@ tweepy
 gunicorn
 numpy
 nltk
-sklearn
 scipy
+scikit-learn
