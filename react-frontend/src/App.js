@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import axios from 'axios';
 import './App.css';
-const qs = require('query-string');
 
 class Result extends Component {
   constructor(props) {
@@ -11,7 +10,15 @@ class Result extends Component {
   }
 
   componentDidMount() {
-    var verifier = qs.parse(this.props.location.search).oauth_verifier;
+    var queryString = this.props.location.search;
+    var regex = /[?&]([^=#]+)=([^&#]*)/g,
+      url = queryString,
+      params = {},
+      match;
+    while(match = regex.exec(url)) {
+      params[match[1]] = match[2];
+    }
+    var verifier = params['oauth_verifier'];
     var obj = {
       params: {oauth_verifier: verifier},
       withCredentials: true,
@@ -54,8 +61,8 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          <Route exact path="/" component={TwitterLoginButton} />
-          <Route path="/result" component={Result} />
+          <Route exact path="/TwiSimilar" component={TwitterLoginButton} />
+          <Route path="/TwiSimilar/result" component={Result} />
         </div>
       </Router>
     );
