@@ -15,12 +15,11 @@ class Result extends Component {
     var obj = {
       params: {oauth_verifier: verifier},
       withCredentials: true,
-      validateStatus: (status) => status === 6
     };
 
     axios.get('https://twisimilar.herokuapp.com/verify', obj)
       .then(res => {
-        this.setState({account: res.data.account});
+        this.setState({account: res.data.account[0]});
       });
   }
 
@@ -43,7 +42,7 @@ class TwitterLoginButton extends Component {
 
   render() {
     return (
-      <button class='ui button' onClick={() => this.authenticate()}>
+      <button className='ui button' onClick={() => this.authenticate()}>
         Log in with Twitter
       </button>
     );
