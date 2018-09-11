@@ -1,4 +1,4 @@
-from flask import Flask, redirect, session, request
+from flask import Flask, redirect, session, request, jsonify
 from flask_cors import CORS
 import pickle
 import numpy as np
@@ -66,4 +66,6 @@ def predict_similar():
     X = vectorizer.transform(tweet_text_list)
     predictions = classifier.predict(X)
 
-    return Counter(predictions).most_common(1)[0], 200, []
+    data = {'account': Counter(predictions).most_common(1)[0]}
+
+    return jsonify(data), 200

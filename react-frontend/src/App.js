@@ -20,7 +20,7 @@ class Result extends Component {
 
     axios.get('https://twisimilar.herokuapp.com/verify', obj)
       .then(res => {
-        this.setState({account: res.data});
+        this.setState({account: res.data.account});
       });
   }
 
